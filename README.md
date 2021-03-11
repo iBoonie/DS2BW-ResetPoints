@@ -5,4 +5,4 @@ Should work fine in non-Broken World, but untested.
 
 I have included the source if you want to take a peak in it. You can also decompile it, but you will need tankviewer: https://siegetheday.org/?q=node/2951
 
-Note: This will not work with aranna legacy mod since both of them modify the hotbar on the bottom. If you want to reset your skills, make sure to disable the aranna mod first.
+Note: This will not work with aranna legacy mod since both of them modify the hotbar on the bottom. If you want to reset your skills, make sure to disable aranna legacy mod first.
