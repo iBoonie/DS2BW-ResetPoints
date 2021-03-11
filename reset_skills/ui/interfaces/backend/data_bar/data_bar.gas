@@ -1,0 +1,1410 @@
+[t:interface,n:data_bar]
+{
+	skrit = [[
+		owner = GUInterface;
+		#include "k_inc_quest_management"
+		
+		ToggleJournal$
+		{
+			UIGame.ToggleJournal();
+		}
+		
+		ToggleClothmap$
+		{
+			UIGame.ToggleClothMap();
+		}
+		
+		TogglePause$
+		{
+			UIWindow window$ = UIShell.FindUIWindow( "button_pause_bg", "data_bar" );
+			if ( AppModule.IsUserPaused() )
+			{				
+				window$.SetRolloverKey( "button_resume" );
+				UIShell.SetRolloverName( "button_resume" );
+			}
+			else
+			{
+				window$.SetRolloverKey( "button_pause" );
+				UIShell.SetRolloverName( "button_pause" );
+			}
+		}
+
+		LoadJournalTexture$( string state$ )
+		{
+			SyncJournalButtonTexture$(state$);
+		}
+
+		JournalButtonDown$
+		{
+			LoadJournalTexture$("-down");
+		}
+
+		JournalButtonUp$
+		{
+			LoadJournalTexture$("-up");
+		}
+		
+		JournalButtonOver$
+		{
+			LoadJournalTexture$("-over");
+		}
+
+		LoadPartyControlsTexture$( string state$, bool bFeedback$ )
+		{
+			string texture$;
+			UIWindow window$ = UIShell.FindUIWindow( "button_party_controls", "data_bar" );
+			if ( window$ != NULL && Server.GetScreenParty() != NULL )
+			{
+				eStandingOrders orders$ = Server.GetScreenParty().GetParty().GetStandingOrders();
+				if ( orders$ == SO_None )
+				{
+					texture$ = "b_gui_ig_m_bb_party-control";
+					window$.SetRolloverKey( "button_mirror" );
+					UIShell.SetRolloverName( "button_mirror" );
+				}
+				else if ( orders$ == SO_Aggressive )
+				{
+					texture$ = "b_gui_ig_m_bb_rampage";
+					window$.SetRolloverKey( "button_mirror" );
+					UIShell.SetRolloverName( "button_mirror" );
+
+					if(bFeedback$)
+					{
+						string mode$ = Report.Translate(contentdb.GetTemplateString( "gs_party_order_rampage_message:global_string:screen_text", "" ));
+						if(!StringTool.IsEmpty(mode$))
+						{
+							//UIMenuManager.FadeInterfaceWithText( "generic_text_2", mode$, "textbox_default", "b_gui_fnt_42p_ringbearer-gold", 0.13, 0.75, 1.0 );
+							UIGame.DisplayMsgSound( "s_ui_ig_rampage_order", mode$ );
+						}
+					}
+				}
+				else if ( orders$ == SO_Guard )
+				{
+					texture$ = "b_gui_ig_m_bb_guard";
+					window$.SetRolloverKey( "button_mirror" );
+					UIShell.SetRolloverName( "button_mirror" );
+
+					if(bFeedback$)
+					{
+						string mode$ = Report.Translate(contentdb.GetTemplateString( "gs_party_order_guard_message:global_string:screen_text", "" ));
+						if(!StringTool.IsEmpty(mode$))
+						{
+							//UIMenuManager.FadeInterfaceWithText( "generic_text_2", mode$, "textbox_default", "b_gui_fnt_42p_ringbearer-gold", 0.13, 0.75, 1.0 );
+							UIGame.DisplayMsgSound( "s_ui_ig_quard_order", mode$ );
+						}
+					}
+				}
+				else if ( orders$ == SO_Mirror )
+				{
+					texture$ = "b_gui_ig_m_bb_mirror";
+					window$.SetRolloverKey( "button_rampage" );
+					UIShell.SetRolloverName( "button_rampage" );
+
+					if(bFeedback$)
+					{
+						string mode$ = Report.Translate(contentdb.GetTemplateString( "gs_party_order_mirror_message:global_string:screen_text", "" ));
+						if(!StringTool.IsEmpty(mode$))
+						{
+							//UIMenuManager.FadeInterfaceWithText( "generic_text_2", mode$, "textbox_default", "b_gui_fnt_42p_ringbearer-gold", 0.13, 0.75, 1.0 );
+							UIGame.DisplayMsgSound( "s_ui_ig_mirror_order", mode$ );
+						}
+					}
+				}
+				else if ( orders$ == SO_Wait )
+				{
+					texture$ = "b_gui_ig_m_bb_wait";
+					window$.SetRolloverKey( "button_mirror" );
+					UIShell.SetRolloverName( "button_mirror" );
+
+					if(bFeedback$)
+					{
+						string mode$ = Report.Translate(contentdb.GetTemplateString( "gs_party_order_wait_message:global_string:screen_text", "" ));
+						if(!StringTool.IsEmpty(mode$))
+						{
+							//UIMenuManager.FadeInterfaceWithText( "generic_text_2", mode$, "textbox_default", "b_gui_fnt_42p_ringbearer-gold", 0.13, 0.75, 1.0 );
+							UIGame.DisplayMsgSound( "s_ui_ig_wait_order", mode$ );
+						}
+					}
+				}
+
+				StringTool.Append( texture$, state$ );
+				window$.LoadTexture( texture$, false );
+			}
+		}
+
+		PartyControlsDown$
+		{
+			LoadPartyControlsTexture$( "-down", false );
+		}
+
+		PartyControlsUp$
+		{
+			LoadPartyControlsTexture$( "-up", false );
+		}
+
+		PartyControlsUpEnable$
+		{
+			LoadPartyControlsTexture$( "-up", true );
+		}
+
+		PartyControlsOver$
+		{
+			LoadPartyControlsTexture$( "-over", false );		
+		}	
+		
+		PartyOrderGuard$
+		{
+			UIPartyManager.SetPartyOrders( SO_Guard );
+			UIPartyManager.SetFormationsActive( false );
+			UIShell.PlayUISound( "s_ui_ig_bttn_shortcut_down" ); // For the button
+		}
+
+		PartyOrderRampage$
+		{
+			UIPartyManager.SetPartyOrders( SO_Aggressive );
+			UIPartyManager.SetFormationsActive( false );
+			UIShell.PlayUISound( "s_ui_ig_bttn_shortcut_down" ); // For the button
+		}
+
+		PartyOrderMirror$
+		{
+			UIPartyManager.SetPartyOrders( SO_Mirror );
+			UIPartyManager.SetFormationsActive( false );
+			UIShell.PlayUISound( "s_ui_ig_bttn_shortcut_down" ); // For the button
+		}
+
+		PartyOrderWait$
+		{
+			UIPartyManager.SetPartyOrders( SO_Wait );
+			UIPartyManager.SetFormationsActive( false );
+			UIShell.PlayUISound( "s_ui_ig_bttn_shortcut_down" ); // For the button
+		}
+
+		PartyControlsPressed$
+		{
+			// If we're in mirror mode, switch to rampage
+			// If we're in any other mode, switch to mirror
+			UIWindow window$ = UIShell.FindUIWindow( "button_party_controls", "data_bar" );
+			if ( window$ != NULL && Server.GetScreenParty() != NULL )
+			{
+				eStandingOrders orders$ = Server.GetScreenParty().GetParty().GetStandingOrders();
+				if ( orders$ == SO_Mirror )
+				{
+					PartyOrderRampage$();
+				}
+				else //if ( orders$ == SO_Aggressive ) ||
+				//if ( orders$ == SO_Guard ) ||
+				//if ( orders$ == SO_Wait )
+				{
+					PartyOrderMirror$();
+				}
+			}
+		}
+
+		PlayFormationSound$
+		{
+			if ( IsInGame( WorldState.GetCurrentState() ) && !UIPartyManager.IsConstructingParty() )
+			{
+				if ( UIPartyManager.GetFormationsActive() )
+				{
+					UIShell.PlayUISound( "s_ui_ig_formation_open" );
+				}
+				else
+				{
+					UIShell.PlayUISound( "s_ui_ig_formation_close" );
+				}
+			}
+		}
+
+		PartyRegroup$
+		{
+			UIPartyManager.UpdateFormations();
+			UIShell.PlayUISound( "s_ui_ig_bttn_shortcut_down" ); // For the button
+			
+			/*string mode$ = Report.Translate(contentdb.GetTemplateString( "gs_party_order_regroup_message:global_string:screen_text", "" ));
+			if(!StringTool.IsEmpty(mode$))
+			{
+				//UIMenuManager.FadeInterfaceWithText( "generic_text_2", mode$, "textbox_default", "b_gui_fnt_42p_ringbearer-gold", 0.13, 0.75, 0.5 );
+				UIGame.DisplayMsgSound( "s_ui_ig_party_order", mode$ );
+			}*/
+		}
+		
+		PartyResetSkill$
+		{
+			string report$ = "";
+			string CharacterName$ = "";
+			string SkillMsg$ = Report.Translate("Number of unassigned skill points");
+			int index$ = 0;
+			int AvailPts$ = 0;
+			Go member$ = UIPartyManager.GetSelectedCharacter().Go;
+		    Go memberGo$ = member$.GetGoid().Go;
+			int memberidx$ = UIPartyManager.GetCharacterPartyIndex(memberGo$) + 1;
+			if (member$ != NULL)
+			{
+                // Melee
+				memberGo$.Actor.RSSetNaturalSkillLevel( "fortitude", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "critical_strike", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "aegis", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "overbear", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "dual_wield", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "toughness", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "alacrity", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "reinforced_armor", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "smite", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "fierce_renewal", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "rebuke", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "desperate_frenzy", 0 );
+
+                // Ranged
+				memberGo$.Actor.RSSetNaturalSkillLevel( "critical_shot", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "dodge", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "biting_arrow", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "quick_draw", 0 );                        
+				memberGo$.Actor.RSSetNaturalSkillLevel( "far_shot", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "bleed", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "survival", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "shockwave", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "penetrate", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "cunning_renewal", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "mortal_wound", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "ricochet", 0 );
+
+                // Combat Magic
+				memberGo$.Actor.RSSetNaturalSkillLevel( "brilliance", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "devastation", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "debilitation", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "searing_flames", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "amplified_lightning", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "summon_alacrity", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "grim_necromancy", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "quickened_casting", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "vampirism", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "ignite", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "arcane_fury", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "arcing", 0 );
+
+                // Nature Magic
+				memberGo$.Actor.RSSetNaturalSkillLevel( "natural_bond", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "aquatic_affinity", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "summon_fortitude", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "enveloping_embrace", 0 );                        
+				memberGo$.Actor.RSSetNaturalSkillLevel( "arctic_mastery", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "summon_might", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "feral_wrath", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "nurturing_gift", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "arcane_renewal", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "freezing", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "summon_bond", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "absorption", 0 );
+
+                // Blood Assassin
+                memberGo$.Actor.RSSetNaturalSkillLevel( "exsanguinate", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "mark_mastery", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "improved_weapon_enchantments", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "rune_mastery", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "ignite_blood", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "improved_death_strike", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "blood_shots", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "mana_vampire", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "living_death", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "martyr", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "thirst_for_blood", 0 );
+
+                // Fist of Stone
+                memberGo$.Actor.RSSetNaturalSkillLevel( "tremor", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "stone_affinity", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "improved_fault_line", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "fast_recovery", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "first_aid", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "soul_of_strength", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "soul_protection", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "strength_of_the_mountain", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "quake", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "earth_affinity", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "groundshaker", 0 );
+
+                // Active Powers
+				memberGo$.Actor.RSSetNaturalSkillLevel( "brutal_attack", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "provoke", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "whirling_strike", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "staggering_blow", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "warcry", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "waves_of_force", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "elemental_rage", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "take_aim", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "thunderous_shot", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "silence", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "charged_throws", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "bursting_missile", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "repulse", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "flurry", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "gravity_stone", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "icicle_blast", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "circle_of_frost", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "summon_provoke", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "aether_blast", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "invulnerability", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "glacial_aura", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "death_strike", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "power_ravaging_strike", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "rune_of_blood", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "rune_of_sacrifice", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "stone_form", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "earthquake_aura", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "faultline", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "eruption", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "energy_orb", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "flame_nexus", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "conflagration", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "corrosive_eruption", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "harvest_soul", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "chain_lightning", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "gathered_bolt", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "packmule_power", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "queen_scorpion_power", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "fire_elemental_power", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "dire_wolf_power", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "ice_elemental_power", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "dark_naiad_power", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "mythrilhorn_power", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "necrolithid_power", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "pocket_dragon_power", 0 );
+				
+				UISkillManager.SOnSkillPointReady( member$.GetGoid() );
+				
+				member$.GetCommon().GetScreenName(CharacterName$);
+				AvailPts$ = memberGo$.Actor.GetNaturalSkillLevel( "uber" ) + memberGo$.Actor.GetBonusSkillPoints();
+				StringTool.Assignf(report$, "<c:0xFF00FF00>%s</c>: %s - <c:0xFF00FF00>%i</c>" , CharacterName$, SkillMsg$, AvailPts$);
+				UIGame.SDisplayMsg(Server.GetLocalHumanPlayer().GetMachineId(), report$);
+				UIPartyManager.ActivateInventory();
+				UIPartyManager.HandleSelectSkillsTab();
+			}	
+		}
+		
+		ActivateMultiInventories$
+		{
+			if ( AppModule.GetControlKey() )
+			{
+				UIPartyManager.ActivateAllInventories();
+			}
+			else
+			{
+				if ( !UIShell.GetItemActive() )
+				{
+					UIPartyManager.ActivateInventory();
+				}
+			}
+		}
+		
+		trigger OnInterfaceHandleMessage$( MSG_ONSHOW )
+		{
+			// Refresh party control texture
+			PartyControlsUp$();
+		}
+	]];
+	[t:button,n:button_collect_loot_bg]
+	{
+	  i bottom_anchor = 33;
+		dock_group = information_dockbar;
+	  i draw_order = 114;
+	  b is_bottom_anchor = true;
+		rect = 153,567,185,599;
+		rollover_help = collect_loot;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_menubtn-up;
+		[t:button,n:button_collect_loot]
+		{
+		  i bottom_anchor = 34;
+			dock_group = information_dockbar;
+		  i draw_order = 119;
+		  b is_bottom_anchor = true;
+			rect = 153,566,185,598;
+		  f rotate_point_x = 0.500000;
+		  f rotate_point_y = 0.500000;
+			texture = b_gui_ig_m_bb_icon-grab-up;
+			[messages]
+			{
+				disable = loadtexture(b_gui_ig_m_bb_icon-grab-dis);
+				enable = loadtexture(b_gui_ig_m_bb_icon-grab-up);
+				onlbuttondown = loadtexture(b_gui_ig_m_bb_icon-grab-down);
+				onlbuttonup = loadtexture(b_gui_ig_m_bb_icon-grab-up);
+				onrolloff = loadtexture(b_gui_ig_m_bb_icon-grab-up);
+				onrollover = loadtexture(b_gui_ig_m_bb_icon-grab-over);
+			}
+		}
+		[messages]
+		{
+			disable = loadtexture(b_gui_ig_m_menubtn-dis);
+			enable = loadtexture(b_gui_ig_m_menubtn-up);
+			onbuttonpress = notify(collect_loot) & playsound(s_ui_ig_bttn_shortcut_down);
+			onlbuttondown = loadtexture(b_gui_ig_m_menubtn-down);
+			onlbuttonup = loadtexture(b_gui_ig_m_menubtn-up);
+			onrolloff = loadtexture(b_gui_ig_m_menubtn-up);
+			onrollover = loadtexture(b_gui_ig_m_menubtn-over);
+		}
+	}
+	[t:button,n:button_guard]
+	{
+	  i bottom_anchor = 71;
+		dock_group = information_dockbar;
+	  i draw_order = 84;
+		group = formation_plate;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 544,529,576,561;
+	  i right_anchor = 256;
+		rollover_help = button_guard;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_bb_guard-up;
+	  b topmost = true;
+		[messages]
+		{
+			onbuttonpress = call(PartyOrderGuard$) & playsound(s_ui_ig_bttn_shortcut_down);
+			onlbuttondown = loadtexture(b_gui_ig_m_bb_guard-down);
+			onlbuttonup = loadtexture(b_gui_ig_m_bb_guard-up);
+			onrolloff = loadtexture(b_gui_ig_m_bb_guard-up);
+			onrollover = loadtexture(b_gui_ig_m_bb_guard-over);
+		}
+	}
+	[t:button,n:button_health_bg]
+	{
+	  i bottom_anchor = 33;
+	  b consumable = true;
+		dock_group = information_dockbar;
+	  i draw_order = 25;
+	  b is_bottom_anchor = true;
+		rect = 54,567,86,599;
+		rollover_help = button_health_potions;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_menubtn-up;
+		[t:button,n:button_health_potions]
+		{
+		  i bottom_anchor = 34;
+			dock_group = information_dockbar;
+		  i draw_order = 28;
+		  b is_bottom_anchor = true;
+			rect = 54,566,86,598;
+			rollover_help = button_health_potions;
+		  f rotate_point_x = 0.500000;
+		  f rotate_point_y = 0.500000;
+			texture = b_gui_ig_m_bb_icon-health-up;
+			[messages]
+			{
+				disable = loadtexture(b_gui_ig_m_bb_icon-health-dis);
+				enable = loadtexture(b_gui_ig_m_bb_icon-health-up);
+				onlbuttondown = loadtexture(b_gui_ig_m_bb_icon-health-down);
+				onlbuttonup = loadtexture(b_gui_ig_m_bb_icon-health-up);
+				onrolloff = loadtexture(b_gui_ig_m_bb_icon-health-up);
+				onrollover = loadtexture(b_gui_ig_m_bb_icon-health-over);
+			}
+		}
+		[messages]
+		{
+			disable = loadtexture(b_gui_ig_m_menubtn-dis);
+			enable = loadtexture(b_gui_ig_m_menubtn-up);
+			onbuttonpress = notify(drink_health_potions);
+			onlbuttondown = loadtexture(b_gui_ig_m_menubtn-down);
+			onlbuttonup = loadtexture(b_gui_ig_m_menubtn-up);
+			onrolloff = loadtexture(b_gui_ig_m_menubtn-up);
+			onrollover = loadtexture(b_gui_ig_m_menubtn-over);
+		}
+	}
+	[t:button,n:button_inventory]
+	{
+	  i bottom_anchor = 42;
+		dock_group = information_dockbar;
+	  i draw_order = 121;
+	  b is_bottom_anchor = true;
+		rect = 2,558,54,600;
+		rollover_help = toggle_inventory;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_bb_charopen-up;
+		uvcoords = 0.109375,0.000000,0.921875,0.656250;
+		[messages]
+		{
+			onbuttonpress = call(ActivateMultiInventories$) & playsound(s_ui_ig_bttn_inventory_down);
+			onlbuttondown = loadtexture(b_gui_ig_m_bb_charopen-down);
+			onlbuttonup = loadtexture(b_gui_ig_m_bb_charopen-up);
+			onrolloff = loadtexture(b_gui_ig_m_bb_charopen-up);
+			onrollover = loadtexture(b_gui_ig_m_bb_charopen-over);
+		}
+	}
+	[t:checkbox,n:button_item_labels]
+	{
+	  b allow_user_press = true;
+	  i bottom_anchor = 33;
+	  i draw_order = 136;
+	  b is_bottom_anchor = true;
+		rect = 186,567,218,599;
+		rollover_help = labels_indicator_on;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_bb_item-level-up02;
+		[messages]
+		{			
+			onbuttonpress = playsound(s_ui_ig_bttn_inventory_down);
+			oncheck = notify(labels_on) & setrolloverhelp(labels_indicator_on) & loadtexture(b_gui_ig_m_bb_item-level-up);			
+			onlbuttondown = loadtexture(b_gui_ig_m_bb_item-level-down02);
+			onlbuttondownchecked = loadtexture(b_gui_ig_m_bb_item-level-down);
+			onlbuttonup = loadtexture(b_gui_ig_m_bb_item-level-up02);
+			onlbuttonupchecked = loadtexture(b_gui_ig_m_bb_item-level-up);
+			onrolloff = loadtexture(b_gui_ig_m_bb_item-level-up02);
+			onrolloffchecked = loadtexture(b_gui_ig_m_bb_item-level-up);
+			onrollover = loadtexture(b_gui_ig_m_bb_item-level-over02);
+			onrolloverchecked = loadtexture(b_gui_ig_m_bb_item-level-over);
+			onuncheck = notify(labels_off) & setrolloverhelp(labels_indicator_off) & loadtexture(b_gui_ig_m_bb_item-level-up02);
+		}
+	}
+	[t:button,n:button_journal_bg]
+	{
+	  i bottom_anchor = 33;
+	  b consumable = true;
+		dock_group = information_dockbar;
+	  i draw_order = 34;
+	  b is_bottom_anchor = true;
+		rect = 120,567,152,599;
+		rollover_help = button_journal_open;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_menubtn-up;
+		[t:button,n:button_journal]
+		{
+		  i bottom_anchor = 34;
+			dock_group = information_dockbar;
+		  i draw_order = 37;
+		  b is_bottom_anchor = true;
+			rect = 120,566,152,598;
+		  f rotate_point_x = 0.500000;
+		  f rotate_point_y = 0.500000;
+			texture = b_gui_ig_m_bb_icon-journal-up;
+			[messages]
+			{
+				disable = loadtexture(b_gui_ig_m_bb_icon-journal-dis);
+				enable = call(JournalButtonUp$());
+				onlbuttondown = call(JournalButtonDown$());
+				onlbuttonup = call(JournalButtonUp$());
+				onrolloff = call(JournalButtonUp$());
+				onrollover = call(JournalButtonOver$());
+				onstartanim = flashanimation(0.2,true,1);
+			}
+		}
+		[messages]
+		{
+			onbuttonpress = call(ToggleJournal$);
+			onlbuttondown = loadtexture(b_gui_ig_m_menubtn-down);
+			onlbuttonup = loadtexture(b_gui_ig_m_menubtn-up);
+			onrolloff = loadtexture(b_gui_ig_m_menubtn-up);
+			onrollover = loadtexture(b_gui_ig_m_menubtn-over);
+		}
+	}
+	[t:button,n:button_mana_bg]
+	{
+	  i bottom_anchor = 33;
+	  b consumable = true;
+		dock_group = information_dockbar;
+	  i draw_order = 31;
+	  b is_bottom_anchor = true;
+		rect = 87,567,119,599;
+		rollover_help = button_mana_potions;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_menubtn-up;
+		[t:button,n:button_mana_potions]
+		{
+		  i bottom_anchor = 34;
+			dock_group = information_dockbar;
+		  i draw_order = 36;
+		  b is_bottom_anchor = true;
+			rect = 87,566,119,598;
+		  f rotate_point_x = 0.500000;
+		  f rotate_point_y = 0.500000;
+			texture = b_gui_ig_m_bb_icon-mana-up;
+			[messages]
+			{
+				disable = loadtexture(b_gui_ig_m_bb_icon-mana-dis);
+				enable = loadtexture(b_gui_ig_m_bb_icon-mana-up);
+				onlbuttondown = loadtexture(b_gui_ig_m_bb_icon-mana-down);
+				onlbuttonup = loadtexture(b_gui_ig_m_bb_icon-mana-up);
+				onrolloff = loadtexture(b_gui_ig_m_bb_icon-mana-up);
+				onrollover = loadtexture(b_gui_ig_m_bb_icon-mana-over);
+			}
+		}
+		[messages]
+		{
+			disable = loadtexture(b_gui_ig_m_menubtn-dis);
+			enable = loadtexture(b_gui_ig_m_menubtn-up);
+			onbuttonpress = notify(drink_mana_potions) & playsound(s_ui_ig_drink_potion);
+			onlbuttondown = loadtexture(b_gui_ig_m_menubtn-down);
+			onlbuttonup = loadtexture(b_gui_ig_m_menubtn-up);
+			onrolloff = loadtexture(b_gui_ig_m_menubtn-up);
+			onrollover = loadtexture(b_gui_ig_m_menubtn-over);
+		}
+	}
+	[t:button,n:button_mirror]
+	{
+	  i bottom_anchor = 71;
+		dock_group = information_dockbar;
+	  i draw_order = 85;
+		group = formation_plate;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 581,529,613,561;
+	  i right_anchor = 219;
+		rollover_help = button_mirror;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_bb_mirror-up;
+	  b topmost = true;
+		[messages]
+		{
+			onbuttonpress = call(PartyOrderMirror$) & playsound(s_ui_ig_bttn_shortcut_down);
+			onlbuttondown = loadtexture(b_gui_ig_m_bb_mirror-down);
+			onlbuttonup = loadtexture(b_gui_ig_m_bb_mirror-up);
+			onrolloff = loadtexture(b_gui_ig_m_bb_mirror-up);
+			onrollover = loadtexture(b_gui_ig_m_bb_mirror-over);
+		}
+	}
+	[t:button,n:button_options_bg]
+	{
+	  i bottom_anchor = 33;
+	  b consumable = true;
+		dock_group = information_dockbar;
+	  i draw_order = 62;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 768,567,800,599;
+	  i right_anchor = 32;
+		rollover_help = button_menu;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_menubtn-up;
+		[t:button,n:button_options]
+		{
+		  i bottom_anchor = 34;
+			dock_group = information_dockbar;
+		  i draw_order = 63;
+		  b is_bottom_anchor = true;
+		  b is_right_anchor = true;
+			rect = 768,566,800,598;
+		  i right_anchor = 32;
+		  f rotate_point_x = 0.500000;
+		  f rotate_point_y = 0.500000;
+			texture = b_gui_ig_m_bb_icon-door-up;
+			[messages]
+			{
+				disable = loadtexture(b_gui_ig_m_bb_icon-door-dis);
+				enable = loadtexture(b_gui_ig_m_bb_icon-door-up);
+				onlbuttondown = loadtexture(b_gui_ig_m_bb_icon-door-down);
+				onlbuttonup = loadtexture(b_gui_ig_m_bb_icon-door-up);
+				onrolloff = loadtexture(b_gui_ig_m_bb_icon-door-up);
+				onrollover = loadtexture(b_gui_ig_m_bb_icon-door-over);
+			}
+		}
+		[messages]
+		{
+			disable = loadtexture(b_gui_ig_m_menubtn-dis);
+			enable = loadtexture(b_gui_ig_m_menubtn-up);
+			onbuttonpress = notify(options_menu) & playsound(s_ui_ig_bttn_shortcut_down);
+			onlbuttondown = loadtexture(b_gui_ig_m_menubtn-down);
+			onlbuttonup = loadtexture(b_gui_ig_m_menubtn-up);
+			onrolloff = loadtexture(b_gui_ig_m_menubtn-up);
+			onrollover = loadtexture(b_gui_ig_m_menubtn-over);
+		}
+	}
+	[t:button,n:button_party_controls]
+	{
+	  i bottom_anchor = 33;
+	  b consumable = true;
+		dock_group = information_dockbar;
+	  i draw_order = 82;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 577,567,609,599;
+	  i right_anchor = 223;
+		rollover_help = button_party_controls;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_bb_mirror-up;
+		[messages]
+		{
+			enable = call(PartyControlsUpEnable$);
+			//onbuttonpress = notify(toggle_formations) & call(PlayFormationSound$());
+			onbuttonpress = call(PartyControlsPressed$);
+			onlbuttondown = call(PartyControlsDown$);
+			onlbuttonup = call(PartyControlsUp$);
+			onrolloff = call(PartyControlsUp$);
+			onrollover = call(PartyControlsOver$);
+			onshow = call(PartyControlsUp$);
+		}
+	}
+	[t:button,n:button_pause_bg]
+	{
+	  i bottom_anchor = 33;
+	  b consumable = true;
+		dock_group = information_dockbar;
+	  i draw_order = 57;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 643,567,675,599;
+	  i right_anchor = 157;
+		rollover_help = button_pause;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_menubtn-up;
+		[t:button,n:button_pause]
+		{
+		  i bottom_anchor = 34;
+			dock_group = information_dockbar;
+		  i draw_order = 64;
+		  b is_bottom_anchor = true;
+		  b is_right_anchor = true;
+			rect = 643,566,675,598;
+		  i right_anchor = 157;
+		  f rotate_point_x = 0.500000;
+		  f rotate_point_y = 0.500000;
+			texture = b_gui_ig_m_bb_icon-pause-up;
+			[messages]
+			{
+				disable = loadtexture(b_gui_ig_m_bb_icon-pause-dis);
+				enable = loadtexture(b_gui_ig_m_bb_icon-pause-up);
+				onlbuttondown = loadtexture(b_gui_ig_m_bb_icon-pause-down);
+				onlbuttonup = loadtexture(b_gui_ig_m_bb_icon-pause-up);
+				onrolloff = loadtexture(b_gui_ig_m_bb_icon-pause-up);
+				onrollover = loadtexture(b_gui_ig_m_bb_icon-pause-over);
+				onstartanim = flashanimation(0.35,true);
+			}
+		}
+		[messages]
+		{
+			disable = loadtexture(b_gui_ig_m_menubtn-dis);
+			enable = loadtexture(b_gui_ig_m_menubtn-up);
+			onbuttonpress = notify(toggle_pause) & playsound(s_ui_ig_bttn_shortcut_down) & call(TogglePause$);
+			onlbuttondown = loadtexture(b_gui_ig_m_menubtn-down);
+			onlbuttonup = loadtexture(b_gui_ig_m_menubtn-up);
+			onrolloff = loadtexture(b_gui_ig_m_menubtn-up);
+			onrollover = loadtexture(b_gui_ig_m_menubtn-over);
+		}
+	}
+	[t:button,n:button_radar_size_down]
+	{
+	  i bottom_anchor = 19;
+		dock_group = information_dockbar;
+	  i draw_order = 60;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 751,581,771,600;
+	  i right_anchor = 49;
+		rollover_help = radar_reduce;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_mainbtn-up;
+		uvcoords = 0.281250,0.000000,0.593750,0.296875;
+		[messages]
+		{
+			disable = loadtexture(b_gui_ig_m_mainbtn-dis);
+			enable = loadtexture(b_gui_ig_m_mainbtn-up);
+			onbuttonpress = notify(radar_size_down) & playsound(s_ui_ig_bttn_radar_sml_down);
+			onlbuttondown = loadtexture(b_gui_ig_m_mainbtn-down);
+			onlbuttonup = loadtexture(b_gui_ig_m_mainbtn-up);
+			onrolloff = loadtexture(b_gui_ig_m_mainbtn-up);
+			onrollover = loadtexture(b_gui_ig_m_mainbtn-over);
+		}
+	}
+	[t:button,n:button_radar_size_up]
+	{
+	  i bottom_anchor = 21;
+		dock_group = information_dockbar;
+	  i draw_order = 58;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 674,579,693,600;
+	  i right_anchor = 126;
+		rollover_help = radar_enlarge;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_mainbtn-up;
+		uvcoords = 0.000000,0.000000,0.296875,0.328125;
+		[messages]
+		{
+			disable = loadtexture(b_gui_ig_m_mainbtn-dis);
+			enable = loadtexture(b_gui_ig_m_mainbtn-up);
+			onbuttonpress = notify(radar_size_up) & playsound(s_ui_ig_bttn_radar_big_down);
+			onlbuttondown = loadtexture(b_gui_ig_m_mainbtn-down);
+			onlbuttonup = loadtexture(b_gui_ig_m_mainbtn-up);
+			onrolloff = loadtexture(b_gui_ig_m_mainbtn-up);
+			onrollover = loadtexture(b_gui_ig_m_mainbtn-over);
+		}
+	}
+	[t:button,n:button_rampage]
+	{
+	  i bottom_anchor = 71;
+		dock_group = information_dockbar;
+	  i draw_order = 83;
+		group = formation_plate;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 506,529,538,561;
+	  i right_anchor = 294;
+		rollover_help = button_rampage;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_bb_rampage-up;
+	  b topmost = true;
+		[messages]
+		{
+			onbuttonpress = call(PartyOrderRampage$) & playsound(s_ui_ig_bttn_shortcut_down);
+			onlbuttondown = loadtexture(b_gui_ig_m_bb_rampage-down);
+			onlbuttonup = loadtexture(b_gui_ig_m_bb_rampage-up);
+			onrolloff = loadtexture(b_gui_ig_m_bb_rampage-up);
+			onrollover = loadtexture(b_gui_ig_m_bb_rampage-over);
+		}
+	}
+	[t:button,n:button_resetskill]
+	{
+	  i bottom_anchor = 33;
+		dock_group = information_dockbar;
+	  i draw_order = 136;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 468,567,500,599;
+	  i right_anchor = 332;
+		rollover_help = button_reset;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_bb_party-control-up;
+		[messages]
+		{
+			onbuttonpress = call(PartyResetSkill$);
+			onlbuttondown = loadtexture(b_gui_ig_m_bb_party-control-down);
+			onlbuttonup = loadtexture(b_gui_ig_m_bb_party-control-up);
+			onrolloff = loadtexture(b_gui_ig_m_bb_party-control-up);
+			onrollover = loadtexture(b_gui_ig_m_bb_party-control-over);
+		}
+	}
+	[t:button,n:button_regroup]
+	{
+	  i bottom_anchor = 33;
+		dock_group = information_dockbar;
+	  i draw_order = 137;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 544,567,576,599;
+	  i right_anchor = 256;
+		rollover_help = button_regroup;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_bb_regroup-up;
+		[messages]
+		{
+			onbuttonpress = call(PartyRegroup$);
+			onlbuttondown = loadtexture(b_gui_ig_m_bb_regroup-down);
+			onlbuttonup = loadtexture(b_gui_ig_m_bb_regroup-up);
+			onrolloff = loadtexture(b_gui_ig_m_bb_regroup-up);
+			onrollover = loadtexture(b_gui_ig_m_bb_regroup-over);
+		}
+	}
+	[t:button,n:button_social_bg]
+	{
+	  i bottom_anchor = 33;
+		dock_group = information_dockbar;
+	  i draw_order = 116;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 610,567,642,599;
+	  i right_anchor = 190;
+		rollover_help = button_social;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_menubtn-up;
+		[t:button,n:button_social]
+		{
+		  i bottom_anchor = 33;
+			dock_group = information_dockbar;
+		  i draw_order = 118;
+		  b is_bottom_anchor = true;
+		  b is_right_anchor = true;
+			rect = 609,567,641,599;
+		  i right_anchor = 191;
+			rollover_help = button_social;
+		  f rotate_point_x = 0.500000;
+		  f rotate_point_y = 0.500000;
+			texture = b_gui_ig_m_bb_icon-social-up;
+			[messages]
+			{
+				disable = loadtexture(b_gui_ig_m_bb_icon-social-dis);
+				enable = loadtexture(b_gui_ig_m_bb_icon-social-up);
+				onlbuttondown = loadtexture(b_gui_ig_m_bb_icon-social-down)&stopanimation();
+				onlbuttonup = loadtexture(b_gui_ig_m_bb_icon-social-up);
+				onrolloff = loadtexture(b_gui_ig_m_bb_icon-social-up);
+				onrollover = loadtexture(b_gui_ig_m_bb_icon-social-over);
+				onstartanim = flashanimation(0.2,true,1);
+			}
+		}
+		[messages]
+		{
+			disable = loadtexture(b_gui_ig_m_menubtn-dis);
+			enable = loadtexture(b_gui_ig_m_menubtn-up);
+			onbuttonpress = notify(social_window) & playsound(s_ui_ig_bttn_shortcut_down);
+			onlbuttondown = loadtexture(b_gui_ig_m_menubtn-down);
+			onlbuttonup = loadtexture(b_gui_ig_m_menubtn-up);
+			onrolloff = loadtexture(b_gui_ig_m_menubtn-up);
+			onrollover = loadtexture(b_gui_ig_m_menubtn-over);
+		}
+	}
+	[t:button,n:button_wait]
+	{
+	  i bottom_anchor = 71;
+	  i draw_order = 86;
+		group = formation_plate;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 618,529,650,561;
+	  i right_anchor = 182;
+		rollover_help = button_wait;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_bb_wait-up;
+	  b topmost = true;
+		[messages]
+		{
+			onbuttonpress = call(PartyOrderWait$) & playsound(s_ui_ig_bttn_shortcut_down);
+			onlbuttondown = loadtexture(b_gui_ig_m_bb_wait-down);
+			onlbuttonup = loadtexture(b_gui_ig_m_bb_wait-up);
+			onrolloff = loadtexture(b_gui_ig_m_bb_wait-up);
+			onrollover = loadtexture(b_gui_ig_m_bb_wait-over);
+		}
+	}
+	[t:text_box,n:defeated_escape]
+	{
+	  i bottom_anchor = 180;
+	  b center_x = true;
+		dock_group = information_dockbar;
+	  i draw_order = 56;
+		font_type = b_gui_fnt_16p_ringbearer-gold;
+	  b is_bottom_anchor = true;
+		justify = center;
+		rect = 90,450,737,550;
+		fixed_location = true;
+		text = "<c:0xFFFF0000>Your party has been defeated!</c>\n\nIf you have been knocked <c:0xFFFFFF00>unconscious</c>, you may <c:0xFFFFFF00>wait for your hitpoints to recover</c>.\nIf you are <c:0xFFFF0000>dead</c>, you may <c:0xFFFF0000>wait for another player to resurrect you</c>.\n\nYou may also <c:0xFF00FFFF>press Escape for more options</c>.";
+	  b visible = false;
+	}
+	[t:status_bar,n:status_bar_battery]
+	{
+	  i bottom_anchor = 160;
+		dock_group = information_dockbar;
+	  i draw_order = 15;
+		dynamic_edge = top;
+		group = battery;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 785,440,792,463;
+	  i right_anchor = 15;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_bb_battery_full;
+		uvcoords = 0.250000,0.093750,0.687500,0.812500;
+	}
+	[t:text_box,n:text_box_status]
+	{
+	  b center_height = true;
+	  b center_x = true;
+		dock_group = information_dockbar;
+	  b fixed_location = true;
+		font_type = b_gui_fnt_12p_ringbearer-gold;
+		justify = center;
+		i draw_order = 75;
+	  i max_height = 41;
+	  i max_width = 318;
+	  b pass_through = true;
+		rect = 241,5,559,53;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_el_8pxbox-alpha154;
+	  b topmost = true;
+		uvcoords = 0.032164,0.000000,0.964912,1.000000;
+		[messages]
+		{
+			onstartanim = alphaanimation(3.0,1.0,0.0,false);
+		}
+		[t:window,n:status_frame]
+		{
+			visible = true;
+          b topmost = true;
+		  b center_x = true;
+		  i draw_order = 150;
+		  b pass_through = true;
+			rect = 238,3,563,55;
+		  f rotate_point_x = 0.500000;
+		  f rotate_point_y = 0.500000;
+			texture = b_gui_ig_m_info_border;
+			uvcoords = 0.000000,0.147541,0.634766,1.000000;
+		}
+	}
+	[t:text,n:text_pause]
+	{
+	  i bottom_anchor = 33;
+	  i draw_order = 147;
+		font_type = b_gui_fnt_22p_ringbearer-gold;
+	  b is_bottom_anchor = true;
+		justify = center;
+		rect = 235,567,528,598;
+		text = "Game Paused";
+	  b topmost = true;
+	  b visible = false;
+	    center_x = true;
+		[messages]
+		{
+			onstartanim = flashanimation(0.35,true);
+		}
+	}
+	[t:window,n:text_pause_bg]
+	{
+	  i bottom_anchor = 33;
+	  i draw_order = 143;
+	  b is_bottom_anchor = true;
+		rect = 235,567,528,597;
+		texture = b_gui_el_8pxbox-alpha154;
+	  b topmost = true;
+		uvcoords = 0.032164,0.000000,0.964912,1.000000;
+	  b visible = false;
+	    center_x = true;
+	}
+	[t:text,n:text_prompter_line]
+	{
+	  i bottom_anchor = 74;
+	  b center_x = true;
+	  i draw_order = 11;
+		font_type = b_gui_fnt_16p_ringbearer-gold;
+	  b is_bottom_anchor = true;
+		justify = center;
+		rect = 159,526,641,553;
+		text = "This is the prompter line.";
+	  b topmost = true;
+	  b visible = false;
+		[messages]
+		{
+			onanimcomplete = setvisible(false) & setalpha(1.0);
+			onstartanim = alphaanimation(0.5,1.0,0.0);
+		}
+	}
+	[t:window,n:window_bar_right_large]
+	{
+	  i bottom_anchor = 41;
+		dock_group = information_dockbar;
+	  i draw_order = 1;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 544,559,800,600;
+	  i right_anchor = 256;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_bb_bottomplate-lrgrdr;
+		uvcoords = 0.000000,0.000000,1.000000,0.640625;
+	  b visible = false;
+	}
+	[t:window,n:window_bar_right_medium]
+	{
+	  i bottom_anchor = 42;
+		dock_group = information_dockbar;
+	  i draw_order = 1;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 544,558,800,600;
+	  i right_anchor = 256;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_bb_bottomplate-medrdr;
+		uvcoords = 0.000000,0.000000,1.000000,0.656250;
+	  b visible = false;
+	}
+	[t:window,n:window_bar_right_small]
+	{
+	  i bottom_anchor = 41;
+		dock_group = information_dockbar;
+	  i draw_order = 1;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 544,559,800,600;
+	  i right_anchor = 256;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_bb_bottomplate-smlrdr;
+		uvcoords = 0.000000,0.000000,1.000000,0.640625;
+	  b visible = false;
+	}
+	[t:window,n:window_battery]
+	{
+	  i bottom_anchor = 166;
+		dock_group = information_dockbar;
+	  i draw_order = 16;
+		group = battery;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 780,434,796,466;
+	  i right_anchor = 20;
+		rollover_help = battery_life;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_bb_battery_battery;
+	}
+	[t:window,n:window_battery_critical]
+	{
+	  i bottom_anchor = 166;
+		dock_group = information_dockbar;
+	  i draw_order = 17;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 780,434,796,466;
+	  i right_anchor = 20;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_bb_battery_bolt;
+	  b visible = false;
+		[messages]
+		{
+			oncreated = alphaanimation(1.0,1.0,0.0,true);
+		}
+	}
+	[t:window,n:window_compass]
+	{
+	  i bottom_anchor = 49;
+		dock_group = information_dockbar;
+	  i draw_order = 55;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 659,551,787,679;
+	  i right_anchor = 141;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_radarring-sml;
+	  b visible = false;
+	}
+	[t:window,n:window_edge_left]
+	{
+	  i bottom_anchor = 36;
+	  i draw_order = 7;
+	  b is_bottom_anchor = true;
+		rect = 179,564,233,603;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_bb_bottomplate-lt;
+		uvcoords = 0.046875,0.390625,0.890625,1.000000;
+	}
+	[t:window,n:window_edge_right]
+	{
+	  i bottom_anchor = 36;
+	  i draw_order = 3;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 520,564,574,603;
+	  i right_anchor = 280;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_bb_bottomplate-rt;
+		uvcoords = 0.156250,0.390625,1.000000,1.000000;
+	}
+	[t:window,n:window_formations_plate]
+	{
+	  i bottom_anchor = 80;
+		dock_group = information_dockbar;
+	  i draw_order = 81;
+		group = formation_plate;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 492,520,662,571;
+	  i right_anchor = 308;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_bb_form-plate;
+	  b topmost = true;
+		uvcoords = 0.000000,0.203125,0.664063,1.000000;
+	}
+	[t:window,n:window_lag]
+	{
+	  i bottom_anchor = 90;
+	  b center_x = true;
+		dock_group = information_dockbar;
+	  i draw_order = 109;
+		group = information_dockbar;
+	  b is_bottom_anchor = true;
+		rect = 384,528,416,560;
+		rollover_help = slow_network;
+		texture = b_gui_el_deadnet;
+	  b visible = false;
+	}
+	[t:window,n:window_left]
+	{
+	  i bottom_anchor = 36;
+	  i draw_order = 5;
+	  b is_bottom_anchor = true;
+		rect = 0,564,176,604;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_bb_bottomplate-mid;
+		uvcoords = -0.234104,0.375000,2.341040,1.000000;
+		wrap_mode = tiled;
+	}
+	[t:window,n:window_left_marker]
+	{
+	  i draw_order = 139;
+	  b pass_through = true;
+		rect = 221,565,229,598;
+	}
+	[t:window,n:window_radar_large]
+	{
+	  i bottom_anchor = 162;
+		dock_group = information_dockbar;
+	  i draw_order = 54;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 633,438,811,617;
+	  i right_anchor = 167;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_rdr-lrg;
+	  b visible = false;
+	}
+	[t:window,n:window_radar_large_bg]
+	{
+	  i bottom_anchor = 150;
+		dock_group = information_dockbar;
+	  i draw_order = 17;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 643,450,801,607;
+	  i right_anchor = 157;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_radarblack-lrg;
+		uvcoords = 0.195313,0.191406,0.812500,0.804688;
+	  b visible = false;
+	}
+	[t:window,n:window_radar_normal]
+	{
+	  i bottom_anchor = 129;
+		dock_group = information_dockbar;
+	  i draw_order = 43;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 657,471,785,599;
+	  i right_anchor = 143;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_rdr;
+	  b visible = false;
+	}
+	[t:window,n:window_radar_normal_bg]
+	{
+	  i bottom_anchor = 119;
+		dock_group = information_dockbar;
+	  i draw_order = 43;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 668,481,779,592;
+	  i right_anchor = 132;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_radarblack;
+		uvcoords = 0.070313,0.062500,0.937500,0.929688;
+	  b visible = false;
+	}
+	[t:slider,n:window_radar_slider_bg]
+	{
+	  i bottom_anchor = 16;
+	  i disable_color = 1442840575;
+		dock_group = information_dockbar;
+	  i draw_order = 59;
+	  b dynamic_button = false;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+	  i max_value = 32;
+	  i min_value = 0;
+	  i default_value = 32;
+		rect = 690,584,754,600;
+	  b repeater_buttons = true;
+	  i right_anchor = 110;
+		rollover_help = radar_zoom_slider;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		slide_axis = horizontal;
+	  i step_value = 1;
+		texture = b_gui_ig_m_radarzoom;
+		[t:button,n:button_slider]
+		{
+			dock_group = information_dockbar;
+		  i draw_order = 60;
+			rect = 690,584,706,600;
+		  f rotate_point_x = 0.500000;
+		  f rotate_point_y = 0.500000;
+			texture = b_gui_ig_m_mainbtn-up;
+			uvcoords = 0.734375,0.000000,1.000000,0.296875;
+			[messages]
+			{
+				disable = loadtexture(b_gui_ig_m_mainbtn-dis);
+				enable = loadtexture(b_gui_ig_m_mainbtn-up);
+				oncreated = setsliderbutton();
+				onlbuttondown = loadtexture(b_gui_ig_m_mainbtn-down);
+				onlbuttonup = playsound(s_ui_ig_slider_awp_release);
+				onrolloff = loadtexture(b_gui_ig_m_mainbtn-up);
+				onrollover = loadtexture(b_gui_ig_m_mainbtn-over);
+			}
+		}
+		[messages]
+		{
+			onchange = notify(radar_zoom);
+		}
+	}
+	[t:window,n:window_right]
+	{
+	  i bottom_anchor = 36;
+	  i draw_order = 3;
+	  b is_bottom_anchor = true;
+	  b is_right_anchor = true;
+		rect = 584,564,602,603;
+	  i right_anchor = 216;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+		texture = b_gui_ig_m_bb_bottomplate-mid;
+		uvcoords = 0.000000,0.390625,0.281250,1.000000;
+		wrap_mode = tiled;
+	}
+	[t:window,n:window_right_marker]
+	{
+	  i draw_order = 141;
+	  b is_right_anchor = true;
+	  b pass_through = true;
+		rect = 534,565,542,598;
+	  i right_anchor = 266;
+	}
+	[t:window,n:window_slownet]
+	{
+	  i bottom_anchor = 90;
+	  b center_x = true;
+		dock_group = information_dockbar;
+	  i draw_order = 109;
+		group = information_dockbar;
+	  b is_bottom_anchor = true;
+		rect = 366,13,398,45;
+		rollover_help = slow_network;
+		texture = b_gui_el_slownet;
+	  b visible = false;
+	}
+	[t:window,n:window_status_bar]
+	{
+	  i bottom_anchor = 37;
+	  b center_x = true;
+	  i draw_order = 2;
+	  b is_bottom_anchor = true;
+		rect = 200,563,600,600;
+	  f rotate_point_x = 0.500000;
+	  f rotate_point_y = 0.500000;
+	  b stretch_x = true;
+		texture = b_gui_ig_m_bb_bottomplate;
+		uvcoords = 0.000000,0.000000,1.519531,0.289063;
+		wrap_mode = tiled;
+	}
+}
