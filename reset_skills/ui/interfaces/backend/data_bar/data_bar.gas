@@ -317,7 +317,7 @@
                 memberGo$.Actor.RSSetNaturalSkillLevel( "fast_recovery", 0 );
                 memberGo$.Actor.RSSetNaturalSkillLevel( "first_aid", 0 );
                 memberGo$.Actor.RSSetNaturalSkillLevel( "soul_of_strength", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "soul_protection", 0 );
+                memberGo$.Actor.RSSetNaturalSkillLevel( "soul_of_protection", 0 );
                 memberGo$.Actor.RSSetNaturalSkillLevel( "strength_of_the_mountain", 0 );
                 memberGo$.Actor.RSSetNaturalSkillLevel( "quake", 0 );
                 memberGo$.Actor.RSSetNaturalSkillLevel( "earth_affinity", 0 );
