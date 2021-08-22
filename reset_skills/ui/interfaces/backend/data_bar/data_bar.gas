@@ -241,7 +241,7 @@
 			int memberidx$ = UIPartyManager.GetCharacterPartyIndex(memberGo$) + 1;
 			if (member$ != NULL)
 			{
-                // Melee
+				// Melee
 				memberGo$.Actor.RSSetNaturalSkillLevel( "fortitude", 0 );
 				memberGo$.Actor.RSSetNaturalSkillLevel( "critical_strike", 0 );
 				memberGo$.Actor.RSSetNaturalSkillLevel( "aegis", 0 );
@@ -255,7 +255,7 @@
 				memberGo$.Actor.RSSetNaturalSkillLevel( "rebuke", 0 );
 				memberGo$.Actor.RSSetNaturalSkillLevel( "desperate_frenzy", 0 );
 
-                // Ranged
+				// Ranged
 				memberGo$.Actor.RSSetNaturalSkillLevel( "critical_shot", 0 );
 				memberGo$.Actor.RSSetNaturalSkillLevel( "dodge", 0 );
 				memberGo$.Actor.RSSetNaturalSkillLevel( "biting_arrow", 0 );
@@ -269,7 +269,7 @@
 				memberGo$.Actor.RSSetNaturalSkillLevel( "mortal_wound", 0 );
 				memberGo$.Actor.RSSetNaturalSkillLevel( "ricochet", 0 );
 
-                // Combat Magic
+				// Combat Magic
 				memberGo$.Actor.RSSetNaturalSkillLevel( "brilliance", 0 );
 				memberGo$.Actor.RSSetNaturalSkillLevel( "devastation", 0 );
 				memberGo$.Actor.RSSetNaturalSkillLevel( "debilitation", 0 );
@@ -283,7 +283,7 @@
 				memberGo$.Actor.RSSetNaturalSkillLevel( "arcane_fury", 0 );
 				memberGo$.Actor.RSSetNaturalSkillLevel( "arcing", 0 );
 
-                // Nature Magic
+				// Nature Magic
 				memberGo$.Actor.RSSetNaturalSkillLevel( "natural_bond", 0 );
 				memberGo$.Actor.RSSetNaturalSkillLevel( "aquatic_affinity", 0 );
 				memberGo$.Actor.RSSetNaturalSkillLevel( "summon_fortitude", 0 );
@@ -297,33 +297,33 @@
 				memberGo$.Actor.RSSetNaturalSkillLevel( "summon_bond", 0 );
 				memberGo$.Actor.RSSetNaturalSkillLevel( "absorption", 0 );
 
-                // Blood Assassin
-                memberGo$.Actor.RSSetNaturalSkillLevel( "exsanguinate", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "mark_mastery", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "improved_weapon_enchantments", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "rune_mastery", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "ignite_blood", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "improved_death_strike", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "blood_shots", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "mana_vampire", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "living_death", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "martyr", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "thirst_for_blood", 0 );
+				// Blood Assassin
+				memberGo$.Actor.RSSetNaturalSkillLevel( "exsanguinate", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "mark_mastery", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "improved_weapon_enchantments", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "rune_mastery", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "ignite_blood", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "improved_death_strike", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "blood_shots", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "mana_vampire", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "living_death", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "martyr", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "thirst_for_blood", 0 );
 
-                // Fist of Stone
-                memberGo$.Actor.RSSetNaturalSkillLevel( "tremor", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "stone_affinity", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "improved_fault_line", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "fast_recovery", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "first_aid", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "soul_of_strength", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "soul_of_protection", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "strength_of_the_mountain", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "quake", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "earth_affinity", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "groundshaker", 0 );
+				// Fist of Stone
+				memberGo$.Actor.RSSetNaturalSkillLevel( "tremor", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "stone_affinity", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "improved_fault_line", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "fast_recovery", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "first_aid", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "soul_of_strength", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "soul_of_protection", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "strength_of_the_mountain", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "quake", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "earth_affinity", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "groundshaker", 0 );
 
-                // Active Powers
+				// Active Powers
 				memberGo$.Actor.RSSetNaturalSkillLevel( "brutal_attack", 0 );
 				memberGo$.Actor.RSSetNaturalSkillLevel( "provoke", 0 );
 				memberGo$.Actor.RSSetNaturalSkillLevel( "whirling_strike", 0 );
@@ -345,14 +345,14 @@
 				memberGo$.Actor.RSSetNaturalSkillLevel( "aether_blast", 0 );
 				memberGo$.Actor.RSSetNaturalSkillLevel( "invulnerability", 0 );
 				memberGo$.Actor.RSSetNaturalSkillLevel( "glacial_aura", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "death_strike", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "power_ravaging_strike", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "rune_of_blood", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "rune_of_sacrifice", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "stone_form", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "earthquake_aura", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "faultline", 0 );
-                memberGo$.Actor.RSSetNaturalSkillLevel( "eruption", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "death_strike", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "power_ravaging_strike", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "rune_of_blood", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "rune_of_sacrifice", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "stone_form", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "earthquake_aura", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "faultline", 0 );
+				memberGo$.Actor.RSSetNaturalSkillLevel( "eruption", 0 );
 				memberGo$.Actor.RSSetNaturalSkillLevel( "energy_orb", 0 );
 				memberGo$.Actor.RSSetNaturalSkillLevel( "flame_nexus", 0 );
 				memberGo$.Actor.RSSetNaturalSkillLevel( "conflagration", 0 );
